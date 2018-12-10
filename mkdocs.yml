@@ -8,3 +8,4 @@ theme:
   hljs_languages:
     - yaml
     - c++
+    - cpp
