@@ -1,11 +1,17 @@
 # Bubblemelon's Win32 API Notes
 
-## Commands
+## WinMain
 
-* `GetMessage()` - Create a new project.
-* `mkdocs serve` - Start the live-reloading docs server.
-* `mkdocs build` - Build the documentation site.
-* `mkdocs help` - Print this help message.
+```c++
+int APIENTRY WinMain(
+  HINSTANCE hInstance,
+  HINSTANCE hPrevInstance,
+  LPTSTR lpCmdLine,
+  int nCmdShow)
+{
+
+}
+```
 
 ## Project layout
 
@@ -13,3 +19,7 @@
     docs/
         index.md  # The documentation homepage.
         ...       # Other markdown pages, images and other files.
+
+
+## Reference
+[A Simple Window](http://www.winprog.org/tutorial/simple_window.html)
