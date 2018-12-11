@@ -1,4 +1,4 @@
-# Bubblemelon's Win32 API Notes
+# Win32 API Basics
 
 ## Inside WinMain
 
