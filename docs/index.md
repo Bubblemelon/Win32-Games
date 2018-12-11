@@ -132,7 +132,7 @@ Both are used to check for a message on the queue that matches the filter criter
 Whereas, [`PeekMessage`](https://docs.microsoft.com/en-us/windows/desktop/api/winuser/nf-winuser-peekmessagea) returns immediately regardless of whether a message is in the queue.
 
 Reference:  
-* [Examining a Message Queue](https://docs.microsoft.com/en-us/windows/desktop/winmsg/using-messages-and-message-queues#examining-a-message-queue)
+* [Examining a Message Queue](https://docs.microsoft.com/en-us/windows/desktop/winmsg/using-messages-and-message-queues#examining-a-message-queue)    
 
 #### Note
 Notice that whenever `HWND` is present/used, it is to specify a specific window.
@@ -206,8 +206,8 @@ typedef LONG_PTR LRESULT;
 ```
 
 Reference:  
-* [Naming Convention of Types such as LRESULT and What They Mean](https://stackoverflow.com/questions/17851348/what-do-lresult-wparam-and-lparam-mean)
-* [Windows Data Types](https://docs.microsoft.com/en-us/windows/desktop/WinProg/windows-data-types)
+* [Naming Convention of Types such as LRESULT and What They Mean](https://stackoverflow.com/questions/17851348/what-do-lresult-wparam-and-lparam-mean)   
+* [Windows Data Types](https://docs.microsoft.com/en-us/windows/desktop/WinProg/windows-data-types)  
 
 ### [`PostMessage`](https://docs.microsoft.com/en-us/windows/desktop/api/winuser/nf-winuser-postmessagea)
 
@@ -242,8 +242,8 @@ This triggers a [`WM_DESTROY`](https://docs.microsoft.com/en-us/windows/desktop/
 
 
 Reference:
-* [Message Loop Microsoft Docs](https://docs.microsoft.com/en-us/windows/desktop/winmsg/about-messages-and-message-queues#message-loop)
-* [Understanding the Message Loop](http://www.winprog.org/tutorial/message_loop.html)
+* [Message Loop Microsoft Docs](https://docs.microsoft.com/en-us/windows/desktop/winmsg/about-messages-and-message-queues#message-loop)  
+* [Understanding the Message Loop](http://www.winprog.org/tutorial/message_loop.html)  
 
 ## The Window Procedure
 
@@ -291,15 +291,15 @@ My WndProc Analogy:
 > The Window Procedure is like the brain of the application.
 
 Reference:  
-* [Window Procedure Microsoft Docs](https://docs.microsoft.com/en-us/windows/desktop/winmsg/about-messages-and-message-queues#window-procedure)
+* [Window Procedure Microsoft Docs](https://docs.microsoft.com/en-us/windows/desktop/winmsg/about-messages-and-message-queues#window-procedure)   
 
 ## Why Function Names in Win32 end with `A` and `W`
 
  Functions with `A` use [`ANSI`](https://stackoverflow.com/questions/701882/what-is-ansi-format) strings as input and output while functions with `W` use [Unicode](https://unicodebook.readthedocs.io/definitions.html#character-string) strings.
 
  Reference:  
-* [Unicode and ANSI Functions](https://stackoverflow.com/questions/7424383/what-is-the-difference-between-the-a-and-w-functions-in-the-win32-api)  
-* [Stackoverflow Discussion on fucntionsA and functionsW](https://stackoverflow.com/questions/7424383/what-is-the-difference-between-the-a-and-w-functions-in-the-win32-api)
+* [Unicode and ANSI Functions](https://stackoverflow.com/questions/7424383/what-is-the-difference-between-the-a-and-w-functions-in-the-win32-api)    
+* [Stackoverflow Discussion on fucntionsA and functionsW](https://stackoverflow.com/questions/7424383/what-is-the-difference-between-the-a-and-w-functions-in-the-win32-api)  
 
 
 ## References Overall
