@@ -17,17 +17,15 @@ using namespace std;
 #include <tchar.h>
 #include <vector>
 
-
-// definitions 
-#define TIMER1 111
-
+// definitions
+#define TIMER1 1
 
 // global variables
 HINSTANCE hInst; //	program instance
 HFONT editfont; //	a font to write
 HWND hMain = NULL; //	number of windows = handle window = hwnd
 static char MainWin[] = "MainWin"; //	class name
-int dx = 0, dy = 0; // mouse position 
+int dx = 0, dy = 0; // mouse position
 
 // to store paint brush colors
 vector<COLORREF> colors;
@@ -50,42 +48,42 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
 void draw_line(HDC DC, int x, int y, int a, int b, COLORREF color);
 
 // program entry
-int APIENTRY WinMain(				
-	HINSTANCE hInstance,			
+int APIENTRY WinMain(
+	HINSTANCE hInstance,
 	HINSTANCE hPrevInstance, //	in case this program is called from within another program
 	LPTSTR    lpCmdLine,
 	int       nCmdShow)
 {
 
-	hInst = hInstance;										
+	hInst = hInstance;
 
 	MSG msg = {0};
-	
-	//fill description of WNDCLASSEX											
-	WNDCLASSEX wcex;												
+
+	//fill description of WNDCLASSEX
+	WNDCLASSEX wcex;
 	BOOL Result = TRUE;
-	wcex.cbSize = sizeof(WNDCLASSEX);								
-	wcex.style = CS_HREDRAW | CS_VREDRAW;						
-	wcex.lpfnWndProc = (WNDPROC)WndProc;							
-	wcex.cbClsExtra = 0;											
-	wcex.cbWndExtra = 0;											
-	wcex.hInstance = hInstance;										
-	wcex.hIcon = LoadIcon(hInstance, NULL);							
+	wcex.cbSize = sizeof(WNDCLASSEX);
+	wcex.style = CS_HREDRAW | CS_VREDRAW;
+	wcex.lpfnWndProc = (WNDPROC)WndProc;
+	wcex.cbClsExtra = 0;
+	wcex.cbWndExtra = 0;
+	wcex.hInstance = hInstance;
+	wcex.hIcon = LoadIcon(hInstance, NULL);
 	//wcex.hCursor = LoadCursor(NULL, IDC_ARROW);
-	wcex.hCursor = LoadCursor(NULL, IDC_HAND);  // cursor style                   
+	wcex.hCursor = LoadCursor(NULL, IDC_HAND);  // cursor style
 	wcex.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH); // set Background color as white but will be override in OnPaint
-	wcex.lpszMenuName = NULL;									
+	wcex.lpszMenuName = NULL;
 	wcex.lpszClassName = MainWin;
 	wcex.hIconSm = LoadIcon(wcex.hInstance, NULL);
-	
+
 	// register the window
-	Result = (RegisterClassEx(&wcex) != 0);							
+	Result = (RegisterClassEx(&wcex) != 0);
 
 	hMain = CreateWindow(MainWin, "Bubblemelon Paint on Chalk Board App", WS_OVERLAPPEDWINDOW | WS_VISIBLE, 100, 100, 500, 500, NULL, NULL, hInst, NULL);
 	if (hMain==0)	return 0;
 
-	// Show the window and send a WM_PAINT message to the window 
-	// procedure. 
+	// Show the window and send a WM_PAINT message to the window
+	// procedure.
 	// https://docs.microsoft.com/en-us/windows/desktop/winmsg/using-window-classes
 	ShowWindow(hMain, nCmdShow);
 	UpdateWindow(hMain);
@@ -102,7 +100,8 @@ int APIENTRY WinMain(
 
 	return (int)msg.wParam;
 }
-///////////////////////////////////////////////////
+
+// to update the window whenever the timer expires
 void redr_win_full(HWND hwnd, bool erase)
 {
 	RECT rt;
@@ -123,12 +122,11 @@ void OnLBD(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT keyFlags)
 		painting = true;
 }
 
-
 ///////////////////////////////////
 //		This Function is called every time the Right Mouse Button is down
 ///////////////////////////////////
 void OnRBD(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT keyFlags)
-{		
+{
 	// to change pen colors
 	if (colorId > 0)
 	{
@@ -139,6 +137,7 @@ void OnRBD(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT keyFlags)
 	}
 
 }
+
 ///////////////////////////////////
 //		This Function is called every time a character key is pressed
 ///////////////////////////////////
@@ -146,6 +145,7 @@ void OnChar(HWND hwnd, UINT ch, int cRepeat)
 {
 
 }
+
 ///////////////////////////////////
 //		This Function is called every time the Left Mouse Button is up
 ///////////////////////////////////
@@ -156,24 +156,24 @@ void OnLBU(HWND hwnd, int x, int y, UINT keyFlags)
 	Painted_pixels skipOverElement;
 	skipOverElement.x = -1;
 	paintedPixels.push_back(skipOverElement);
-	
-	// is mouse position is more than 250 on the screen then exit
+
+	// if mouse position is more than 250 on the window
+	// then exit
 	//if (x > 250)
 	//{
 	//	PostQuitMessage(0);
 	//}
-	
+
 }
+
 ///////////////////////////////////
 //		This Function is called every time the Right Mouse Button is up
 ///////////////////////////////////
 void OnRBU(HWND hwnd, int x, int y, UINT keyFlags)
 {
 
-
-
-
 }
+
 ///////////////////////////////////
 //		This Function is called every time the Mouse Moves
 ///////////////////////////////////
@@ -196,7 +196,7 @@ void OnMM(HWND hwnd, int x, int y, UINT keyFlags)
 
 		paintedPixels.push_back(pixel);
 	}
-	
+
 	if ((keyFlags & MK_LBUTTON) == MK_LBUTTON)
 	{
 	}
@@ -207,15 +207,32 @@ void OnMM(HWND hwnd, int x, int y, UINT keyFlags)
 
 	OutputDebugStringA("mousing moving \n");
 }
-///////////////////////////////////
-//		This Function is called once at the begin of a program
-///////////////////////////////////
-#define TIMER1 1
 
+///////////////////////////////////
+// Invoked once at the beginning of a program
+//
+// Called when the WndProc() function
+// receives the `WM_CREATE` message from the
+// message loop, e.g. when the message loop
+// sends a `WM_CREATE` message returned by
+// UpdateWindow().
+//
+// The original OnCreate as according to
+// the API, is called when the plug-in
+// window is first created.
+//
+// https://docs.microsoft.com/en-us/windows/desktop/wmp/the-oncreate-method
+//
+///////////////////////////////////
 BOOL OnCreate(HWND hwnd, CREATESTRUCT FAR* lpCreateStruct)
 {
 	hMain = hwnd;
 
+	// This timer is specific to a window, i.e. hwnd
+	// TIMER 1 is a non-zero identifier
+	// timeout value in miliseconds
+	// pointer to function that will be called when timeout value elapses
+	// https://docs.microsoft.com/en-us/windows/desktop/api/winuser/nf-winuser-settimer
 	if (!SetTimer(hwnd, TIMER1, 20, NULL))
 	{
 		MessageBox(hwnd, "No Timers Available", "Info", MB_OK);
@@ -234,14 +251,14 @@ BOOL OnCreate(HWND hwnd, CREATESTRUCT FAR* lpCreateStruct)
 	colors.push_back(RGB(204, 0, 255));	    //purple
 	colors.push_back(RGB(0, 255, 255));	    //aqua
 	colors.push_back(RGB(255, 250, 5));	    //yellow
-	
+
 	return TRUE;
 }
 
 void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 {
 	HWND hwin;
-	
+
 	switch (id)
 	{
 	default:
@@ -249,13 +266,12 @@ void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 	}
 
 }
-//************************************************************************
+
 void OnTimer(HWND hwnd, UINT id)
 {
-	// redraws the background! 
+	// redraws the background!
 	redr_win_full(hwnd, FALSE); //calling the OnPaint
 }
-//************************************************************************
 
 ///////////////////////////////////
 //		This Function is called every time the window has to be painted again
@@ -266,7 +282,8 @@ void OnPaint(HWND hwnd)
 	// https://docs.microsoft.com/en-us/windows/desktop/api/winuser/ns-winuser-tagpaintstruct
 	PAINTSTRUCT PaintStruct;
 
-	// begins painting by filling paintstruct about painting
+  // device context handle
+	// begins painting (prepares the specified window for painting) by filling paintstruct information about painting
 	// https://docs.microsoft.com/en-us/windows/desktop/api/winuser/nf-winuser-beginpaint
 	HDC DC_ = BeginPaint(hwnd, &PaintStruct);
 
@@ -277,6 +294,12 @@ void OnPaint(HWND hwnd)
 	// https://docs.microsoft.com/en-us/windows/desktop/api/wingdi/nf-wingdi-createcompatibledc
 	HDC DC = CreateCompatibleDC(DC_);
 
+	// DEVICE CONTEXT
+	// a structure that defines a set of graphic objects and their associated attributes,
+	// as well as the graphic modes that affect output.
+	// It tell the Graphic Display Interface (GDI) what to do
+	// https://docs.microsoft.com/en-us/windows/desktop/gdi/device-contexts
+
 	RECT rc;
 	// get the coordinates of client area, see line 110
 	GetClientRect(hwnd, &rc);
@@ -284,12 +307,12 @@ void OnPaint(HWND hwnd)
 	// creates a bitmap compatible with the device that is associated with the specified device context
 	// https://docs.microsoft.com/en-us/windows/desktop/api/wingdi/nf-wingdi-createcompatiblebitmap
 	// to get the width, right(x-coor) minus left(x-coord) or rectangle. positive in right direction.
-	// https://docs.microsoft.com/en-us/previous-versions/dd162897(v%3Dvs.85) 
+	// https://docs.microsoft.com/en-us/previous-versions/dd162897(v%3Dvs.85)
 	hbmMem = CreateCompatibleBitmap(DC_, rc.right - rc.left, 2000);
 
 	// selects object into device context, see line 318
 	hbmOld = (HBITMAP)SelectObject(DC, hbmMem);
-	
+
 	// window background color
 	COLORREF bg = RGB(47, 79, 79);
 	HBRUSH hbrBkGnd = CreateSolidBrush(bg);
@@ -321,20 +344,19 @@ void OnPaint(HWND hwnd)
 	DeleteDC(DC);
 	EndPaint(hwnd, &PaintStruct);
 
-	}
-//****************************************************************************
+}
 
 void draw_line(HDC DC,int x, int y, int a, int b, COLORREF color)
 {
 	// creates a logical pen that has the specified style, width and color.
-	// https://docs.microsoft.com/en-us/windows/desktop/api/wingdi/nf-wingdi-createpen 
+	// https://docs.microsoft.com/en-us/windows/desktop/api/wingdi/nf-wingdi-createpen
 	HPEN pen = CreatePen(PS_SOLID, 3, color);
 
 	// selects object into device context
-	// https://docs.microsoft.com/en-us/windows/desktop/api/wingdi/nf-wingdi-selectobject 
+	// https://docs.microsoft.com/en-us/windows/desktop/api/wingdi/nf-wingdi-selectobject
 	SelectObject(DC, pen);
 
-	// updates current position to specified point 
+	// updates current position to specified point
 	// https://docs.microsoft.com/en-us/windows/desktop/api/wingdi/nf-wingdi-movetoex
 	MoveToEx(DC, x, y, NULL);
 
@@ -343,12 +365,11 @@ void draw_line(HDC DC,int x, int y, int a, int b, COLORREF color)
 	LineTo(DC, a, b);
 
 	// deletes a logical pen to free system resources associated with object
-	// https://docs.microsoft.com/en-us/windows/desktop/api/wingdi/nf-wingdi-deleteobject 
+	// https://docs.microsoft.com/en-us/windows/desktop/api/wingdi/nf-wingdi-deleteobject
 	DeleteObject(pen);
 
-
-
 }
+
 //*************************************************************************
 void OnKeyDown(HWND hwnd, UINT vk, BOOL fDown, int cRepeat, UINT flags)
 {
@@ -363,7 +384,7 @@ void OnKeyDown(HWND hwnd, UINT vk, BOOL fDown, int cRepeat, UINT flags)
 
 			default:
 				break;
-			
+
 		}
 }
 
@@ -380,7 +401,7 @@ void OnKeyUp(HWND hwnd, UINT vk, BOOL fDown, int cRepeat, UINT flags)
 //**************************************************************************
 LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	
+
 	switch (message)
 	{
 
@@ -388,26 +409,26 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 	#define HANDLE_MSG(hwnd, message, fn)    \
     case (message): return HANDLE_##message((hwnd), (wParam), (lParam), (fn))
 	*/
-		
-		HANDLE_MSG(hwnd, WM_CHAR, OnChar);			// when a key is pressed and its a character
-		HANDLE_MSG(hwnd, WM_LBUTTONDOWN, OnLBD);	// when pressing the left button
-		HANDLE_MSG(hwnd, WM_LBUTTONUP, OnLBU);		// when releasing the left button
-		HANDLE_MSG(hwnd, WM_MOUSEMOVE, OnMM);		// when moving the mouse inside your window
+
+		HANDLE_MSG(hwnd, WM_CHAR, OnChar); // when a key is pressed and its a character
+		HANDLE_MSG(hwnd, WM_LBUTTONDOWN, OnLBD); // when pressing the left button
+		HANDLE_MSG(hwnd, WM_LBUTTONUP, OnLBU); // when releasing the left button
+		HANDLE_MSG(hwnd, WM_MOUSEMOVE, OnMM); // when moving the mouse inside your window
 		HANDLE_MSG(hwnd, WM_RBUTTONDOWN, OnRBD);
-		HANDLE_MSG(hwnd, WM_CREATE, OnCreate);		// called only once when the window is created
-		HANDLE_MSG(hwnd, WM_PAINT, OnPaint);		// drawing stuff
-		HANDLE_MSG(hwnd, WM_COMMAND, OnCommand);	// not used
-		HANDLE_MSG(hwnd, WM_KEYDOWN, OnKeyDown);	// press a keyboard key
-		HANDLE_MSG(hwnd, WM_KEYUP, OnKeyUp);		// release a keyboard key
-		HANDLE_MSG(hwnd, WM_TIMER, OnTimer);		// timer
+		HANDLE_MSG(hwnd, WM_CREATE, OnCreate); // called only once when the window is created
+		HANDLE_MSG(hwnd, WM_PAINT, OnPaint); // drawing/render
+		HANDLE_MSG(hwnd, WM_COMMAND, OnCommand); // not used
+		HANDLE_MSG(hwnd, WM_KEYDOWN, OnKeyDown); // press a keyboard key
+		HANDLE_MSG(hwnd, WM_KEYUP, OnKeyUp); // release a keyboard key
+		HANDLE_MSG(hwnd, WM_TIMER, OnTimer); // timer
 
 	case WM_ERASEBKGND:
 		return (LRESULT)1;
-	
-	case WM_DESTROY:		
+
+	case WM_DESTROY:
 		PostQuitMessage(0);
 		break;
-	
+
 	default:
 		return DefWindowProc(hwnd, message, wParam, lParam);
 	}
