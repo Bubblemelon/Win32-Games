@@ -2,6 +2,7 @@ site_name: Bubblemelon's Win32 API Notes
 nav:
     - Home: index.md
     - About: about.md
+    - Paint App: paintapp.md
 theme:
   name: readthedocs
   highlightjs: true
