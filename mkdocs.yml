@@ -1,10 +1,10 @@
 site_name: Bubblemelon's Win32 API Notes
-nav:
+
+pages:
 - Home: index.md
 - My Project Notes:
   - My Paint App : project-notes/paintapp.md
 - About: about.md
-
 
 theme:
   name: readthedocs
