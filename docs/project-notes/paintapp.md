@@ -180,4 +180,27 @@ void OnPaint(HWND hwnd)
 ```
 This logic indicates that only draw the star and crosshair when `showstar` and `showcross` are set to 1. These variables are switching between `1` and `0` very `2` seconds within `OnTimer`.
 
-![shows a star and a crosshair blinking every 2 seconds](/img/cross-and-star-blink.gif)
+![shows a star and a crosshair blinking every 2 seconds](/img/cross-and-star-blink-demo.gif)
+
+## Render Text on the Window
+
+The following snippet is called within `OnPaint` that will render (display the string) a text at coordinates (10, 10).
+
+```c
+/*
+ * Prints the coordinates of the Cross
+ */
+	// int to string
+	crossPos = "x = " + to_string(dx) + " y= " + to_string(dy);
+	// put string in buffer char array
+	strcpy(buffer, crossPos.c_str());
+	// Output text
+	TextOut(DC, 10, 10, buffer, strlen(buffer));
+```
+
+Since `crossPos` changes with respect to cursor coordinates, it is a global variable i.e. `string crossPos = "";`. If the display string does not need to change, it is possible to have it within `OnPaint` like so, `crossPos = "hello!";`
+
+![shows cursor coordinates as text in the window](/img/cursor-coordinates-text-demo.gif)
+
+Reference:  
+[Win32 Text Output Example](http://www.cplusplus.com/forum/windows/31112/)
