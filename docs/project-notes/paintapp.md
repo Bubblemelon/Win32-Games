@@ -1,15 +1,20 @@
 # Paint on Chalk Board App
 
-Contains additional notes on extending functionality of this application.
+Contains additional notes on extending the functionality of this [application](https://github.com/Bubblemelon/Win32-Games#paint-on-chalk-board-app).
 
 ## To Draw a Shape using Lines
 
-Using the `draw_line` function from [`PaintApp.cpp`](https://github.com/Bubblemelon/Win32-Games/blob/5df8d5b5c11aa795a0d35761e2ffb16d5ace6f1d/Paint-on-Chalk-Board-App/winproject/viewserver/PainApp.cpp#L349):
+Use the `draw_line` function from [`PaintApp.cpp`](https://github.com/Bubblemelon/Win32-Games/blob/5df8d5b5c11aa795a0d35761e2ffb16d5ace6f1d/Paint-on-Chalk-Board-App/winproject/viewserver/PainApp.cpp#L349):
 
 ```c
-void draw_line(HDC DC,int x, int y, int a, int b, COLORREF color)
+// Parameters:
+// Device context
+// current x, y position (could be mouse coordinates)
+// where the line should end at coordinates a, b
+// color of the line
+void draw_line(HDC DC, int x, int y, int a, int b, COLORREF color)
 {
-	// creates a logical pen that has the specified style, width and color.
+	// creates a logical pen that has the specified style, width (thickness) and color.
 	// https://docs.microsoft.com/en-us/windows/desktop/api/wingdi/nf-wingdi-createpen
 	HPEN pen = CreatePen(PS_SOLID, 3, color);
 
@@ -31,15 +36,79 @@ void draw_line(HDC DC,int x, int y, int a, int b, COLORREF color)
 
 }
 ```
-For example to draw a Star that shows up on the window, call the following lines within the `OnPaint` function after creating a compatible device context.
+For example to draw a Star that shows up on the window, call the following several `draw_line` functions within `OnPaint` after creating a compatible device context.
 
-It is possible to insert these `draw_line` calls after this line in the code on [`PaintApp.cpp`](https://github.com/Bubblemelon/Win32-Games/blob/5df8d5b5c11aa795a0d35761e2ffb16d5ace6f1d/Paint-on-Chalk-Board-App/winproject/viewserver/PainApp.cpp#L295) or [after this line](https://github.com/Bubblemelon/Win32-Games/blob/5df8d5b5c11aa795a0d35761e2ffb16d5ace6f1d/Paint-on-Chalk-Board-App/winproject/viewserver/PainApp.cpp#L321) as well.
+![Shows an image of a star shaped with yellow lines](/img/star-lines.PNG)
+
+It is possible to insert these `draw_line` calls after this line in the [`PaintApp.cpp`](https://github.com/Bubblemelon/Win32-Games/blob/5df8d5b5c11aa795a0d35761e2ffb16d5ace6f1d/Paint-on-Chalk-Board-App/winproject/viewserver/PainApp.cpp#L295) code or [after this line](https://github.com/Bubblemelon/Win32-Games/blob/5df8d5b5c11aa795a0d35761e2ffb16d5ace6f1d/Paint-on-Chalk-Board-App/winproject/viewserver/PainApp.cpp#L321) as well.
 
 ```C
-draw_line(DC, 325, 600, 375, 450, 244, 244, 66, 8);
-draw_line(DC, 375, 450, 425, 600, 244, 244, 66, 8);
-draw_line(DC, 425, 600, 300, 500, 244, 244, 66, 8);
-draw_line(DC, 325, 600, 445, 500, 244, 244, 66, 8);
-draw_line(DC, 300, 500, 445, 500, 244, 244, 66, 8);
+draw_line(DC, 325, 600, 375, 450, yellowline);
+draw_line(DC, 375, 450, 425, 600, yellowline);
+draw_line(DC, 425, 600, 300, 500, yellowline);
+draw_line(DC, 325, 600, 445, 500, yellowline);
+draw_line(DC, 300, 500, 445, 500, yellowline);
 ```
-Each dr
+
+This will create yellow lines of thickness set to 3 pixels, see [`CreatePen`](https://docs.microsoft.com/en-us/windows/desktop/api/wingdi/nf-wingdi-createpen). If a varied length is preferred, create a width parameter for `draw_line` to pass in the desired width.
+
+For the color of the lines, initialize a `COLORREF` variable within `OnPaint` e.g. `COLORREF yellowline = RGB( 244, 244, 66); //yellow`.
+
+`x`, `y`, `a` and `b` are coordinates on the window.
+
+## Have a Shape Move with the Cursor Coordinates
+
+Have global variables `int dx = 0, dy = 0;` initialized and have [place them within `OnMM`](https://github.com/Bubblemelon/Win32-Games/blob/a7b556fbd4212bbcd47b76c754c5f6c84e81f38d/Paint-on-Chalk-Board-App/winproject/viewserver/PaintApp.cpp#L180), a function called in `WndProc` whenever it receives a `WM_MOUSEMOVE` message like so [`HANDLE_MSG(hwnd, WM_MOUSEMOVE, OnMM);`](https://github.com/Bubblemelon/Win32-Games/blob/a7b556fbd4212bbcd47b76c754c5f6c84e81f38d/Paint-on-Chalk-Board-App/winproject/viewserver/PaintApp.cpp#L417).
+
+```c
+void OnMM(HWND hwnd, int x, int y, UINT keyFlags)
+{
+	// records current cursor position
+	dx = x;
+	dy = y;
+	.
+	.
+	.
+}
+```
+
+### To create a shape that moves with the cursor at a specified width and height
+
+Place the four `draw_line` calls in a function for organization:
+
+```c
+// draws a quadrilateral
+void draw_rectangle(HDC DC, int x, int y, int w, int h, COLORREF linecolor, int lineWidth)
+{
+
+		draw_line(DC, x, y, w, y, magentaline, lineWidth);
+		draw_line(DC, w, y, w, h, magentaline, lineWidth);  
+		draw_line(DC, w, h, x, h, magentaline, lineWidth);
+		draw_line(DC, x, h, x, y, magentaline, lineWidth);
+
+}
+```
+
+Make a call to `draw_rectangle` in `OnPaint`:
+`draw_rectangle(DC, dx, dy, dx+50, dy+50, magentaline, 5);`
+
+This call will create a quadrilateral made up of 4 magenta colored lines of thickness 5 pixels, that has equal height and width i.e. `300` from the cursor.
+
+`COLORREF magentaline = RGB( 255, 0, 255 ); //magenta`
+
+![a shapes that moves with the cursor demo](/img/shape-moves-with-cursor-demo.gif)
+
+This call instead will vary the height and width of the quadrilateral with respect to the cursor position, where a corner of the quadrilateral will be fixed.
+
+`draw_rectangle(DC,50, 50, dx, dy, magentaline, 5);`
+
+![a shapes that changes in witdh and height with the cursor demo](/img/shape-changes-height-witdh-with-cursor-demo.gif)
+
+These `draw_line` calls creates a cross (a target mark) of 10 pixels for height and width:
+
+```
+draw_line(DC, dx - 10, dy, dx + 10, dy, 219, 139, 19, 5);
+draw_line(DC, dx, dy - 10, dx, dy + 10, 219, 139, 19, 5);
+```
+
+![a cross that moves with the cursor demo](/img/cross-moves-with-cursor-demo.gif)
