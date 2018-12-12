@@ -209,7 +209,7 @@ void OnMM(HWND hwnd, int x, int y, UINT keyFlags)
 }
 
 ///////////////////////////////////
-// Invoked once at the beginning of a program
+// Invoked once at the beginning of the program
 //
 // Called when the WndProc() function
 // receives the `WM_CREATE` message from the
@@ -223,6 +223,7 @@ void OnMM(HWND hwnd, int x, int y, UINT keyFlags)
 //
 // https://docs.microsoft.com/en-us/windows/desktop/wmp/the-oncreate-method
 //
+// This OnCreate function is overloaded.
 ///////////////////////////////////
 BOOL OnCreate(HWND hwnd, CREATESTRUCT FAR* lpCreateStruct)
 {
