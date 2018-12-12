@@ -1,6 +1,8 @@
 # Win32-Games
 Where I store my Windows games 🖳
 
+See my notes 📖 on [readthedocs](https://win32-notes.readthedocs.io/en/latest/).
+
 ## Catalogue:
 
 ### [Bubblemelon's Arkanoid]()
