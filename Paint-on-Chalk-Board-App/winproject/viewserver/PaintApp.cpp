@@ -270,8 +270,8 @@ void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 
 void OnTimer(HWND hwnd, UINT id)
 {
-	// redraws the background!
-	redr_win_full(hwnd, FALSE); //calling the OnPaint
+	// redraws the background every 20 miliseconds
+	redr_win_full(hwnd, FALSE); 
 }
 
 ///////////////////////////////////
