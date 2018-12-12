@@ -1,6 +1,6 @@
-# Hello
+# About
 
-Thanks for visiting my notes 😄
+Hello! Thank you for visiting my notes 😄
 
 ## Purpose
 To read my Win32 notes other than on Google Docs and to have a central place to store and display these notes.
