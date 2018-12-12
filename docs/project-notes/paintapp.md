@@ -56,7 +56,7 @@ For the color of the lines, initialize a `COLORREF` variable within `OnPaint` e.
 
 `x`, `y`, `a` and `b` are coordinates on the window.
 
-## Have a Shape Move with the Cursor Coordinates
+## Have a Shape Move change the Cursor Coordinates
 
 Have global variables `int dx = 0, dy = 0;` initialized and have [place them within `OnMM`](https://github.com/Bubblemelon/Win32-Games/blob/a7b556fbd4212bbcd47b76c754c5f6c84e81f38d/Paint-on-Chalk-Board-App/winproject/viewserver/PaintApp.cpp#L180), a function called in `WndProc` whenever it receives a `WM_MOUSEMOVE` message like so [`HANDLE_MSG(hwnd, WM_MOUSEMOVE, OnMM);`](https://github.com/Bubblemelon/Win32-Games/blob/a7b556fbd4212bbcd47b76c754c5f6c84e81f38d/Paint-on-Chalk-Board-App/winproject/viewserver/PaintApp.cpp#L417).
 
@@ -72,7 +72,7 @@ void OnMM(HWND hwnd, int x, int y, UINT keyFlags)
 }
 ```
 
-### To create a shape that moves with the cursor at a specified width and height
+### To Create A Rectangle
 
 Place the four `draw_line` calls in a function for organization:
 
@@ -104,6 +104,9 @@ This call instead will vary the height and width of the quadrilateral with respe
 
 ![a shapes that changes in witdh and height with the cursor demo](/img/shape-changes-height-witdh-with-cursor-demo.gif)
 
+
+### To Create a Target Mark or Crosshair ➕
+
 These `draw_line` calls creates a cross (a target mark) of 10 pixels for height and width:
 
 ```
@@ -112,3 +115,69 @@ draw_line(DC, dx, dy - 10, dx, dy + 10, 219, 139, 19, 5);
 ```
 
 ![a cross that moves with the cursor demo](/img/cross-moves-with-cursor-demo.gif)
+
+## Using OnTimer to Blink Shapes
+
+Add the following lines to [OnTimer](https://github.com/Bubblemelon/Win32-Games/blob/931f9ffd5ede3a2853351669a77eba3d088c5159/Paint-on-Chalk-Board-App/winproject/viewserver/PaintApp.cpp#L271) in `PaintApp.cpp`.
+
+```c
+void OnTimer(HWND hwnd, UINT id)
+{
+	static int count = 0;
+	count++;
+
+  // showing and hiding (i.e. blinking) every 20 milliseconds is too fast
+	if (count >= 10) // called 2 times a second  // 20 miliseconds * 10  = 200 milisec == 2 secs
+	{
+		count = 0;
+
+		// to switch between showing the crosshair && blinking the star
+		if (showcross == 1 || star_blink == 1 ) {
+			showcross = 0;
+			showstar = 0;
+	   }
+		else
+		{
+			showcross = 1;
+			showstar = 1;
+		}
+	}
+
+	// redraws the background every 20 miliseconds
+	redr_win_full(hwnd, FALSE);
+}
+```
+
+`showcross` and `showstar` are global variables (i.e. outside of any function) initialized as such, `int showcross = 1, showstar=1;` These variables can also be Booleans.
+
+Simply wrap around an if statement where drawing the star and crosshair is called within `OnPaint`:
+
+```c
+void OnPaint(HWND hwnd)
+{
+	.
+	.
+	.
+	if (showstar == 1)
+			{
+				draw_line(DC, 325, 600, 375, 450, 244, 244, 66, 8);
+				draw_line(DC, 375, 450, 425, 600, 244, 244, 66, 8);
+				draw_line(DC, 425, 600, 300, 500, 244, 244, 66, 8);
+				draw_line(DC, 325, 600, 445, 500, 244, 244, 66, 8);
+				draw_line(DC, 300, 500, 445, 500, 244, 244, 66, 8);
+	}
+
+	if (showcross == 1)
+		{
+		draw_line(DC, dx - 10, dy, dx + 10, dy, 219, 139, 19, 5);
+		draw_line(DC, dx, dy - 10, dx, dy + 10, 219, 139, 19, 5);
+	}
+	.
+	.
+	.
+}
+
+```
+This logic indicates that only draw the star and crosshair when `showstar` and `showcross` are set to 1. These variables are switching between `1` and `0` very `2` seconds within `OnTimer`.
+
+![shows a star and a crosshair blinking every 2 seconds](/img/cross-and-star-blink.gif)
