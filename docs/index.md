@@ -106,6 +106,19 @@ Passing `g_szClassName`(the name of the WINDCLASSEX object) into `CreateWindowEx
 
 Returns [`HWND`](https://docs.microsoft.com/en-us/windows/desktop/winprog/windows-data-types), a Windows data type that is a handle to a window object.
 
+## Show the Window
+
+```C
+ShowWindow(hwnd, nCmdShow);
+UpdateWindow(hwnd);
+```
+
+After creating the window it is necessary to call the [`ShowWindow`](https://docs.microsoft.com/en-us/windows/desktop/api/winuser/nf-winuser-showwindow) function. This function specifies the state of a specific window (through the window handler i.e. `hwnd`).
+
+The state is determined by the value of `nCmdShow`. For example, when `nCmdShow` has the integer value `3`, this maximizes the specific window.
+
+The [`UpdateWindow`](https://docs.microsoft.com/en-us/windows/desktop/api/winuser/nf-winuser-updatewindow) function updates the client area of the specified window by sending a `WM_PAINT` message to the window if the window's update region is not empty. The function sends a `WM_PAINT` message directly to the window procedure of the specified window, bypassing the application queue. If the update region is empty, no message is sent.
+
 ## The Message Loop
 
 ### [`GetMessage`](https://docs.microsoft.com/en-us/windows/desktop/api/winuser/nf-winuser-getmessage)
@@ -300,7 +313,6 @@ Reference:
  Reference:  
 - [Unicode and ANSI Functions](https://stackoverflow.com/questions/7424383/what-is-the-difference-between-the-a-and-w-functions-in-the-win32-api)    
 - [Stackoverflow Discussion on fucntionsA and functionsW](https://stackoverflow.com/questions/7424383/what-is-the-difference-between-the-a-and-w-functions-in-the-win32-api)  
-
 
 ## References Overall
 [A Simple Window](http://www.winprog.org/tutorial/simple_window.html)
